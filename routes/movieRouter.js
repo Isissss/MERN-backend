@@ -2,35 +2,44 @@ const express = require('express')
 
 const router = express.Router();
 
-let items = [
-    {
-        title: "marvel"
-    },
-    {
-        title: "black widow"
-    },
-    {
-        title: "endgame"
+const Card = require('../Schemas/cardModel')
+const List = require('../Schemas/listModel')
+
+router.get('/', async (req, res) => {
+    try {
+        let cards = await Card.find().populate('list_id')
+        res.json(cards)
+    } catch (error) {
+        res.status(500).send()
+        console.log(error)
     }
-]
-router.get('/', (req, res) => {
-    res.json(items)
     console.log('get')
 })
 
-router.get('/:id', (req, res) => {
-    movie = items[req.params.id]
-    if (movie) {
-        res.send(movie)
-    } else {
-        res.send({ error: `No movie found with id ${req.params.id}` })
+router.get('/:id', async (req, res) => {
+    try {
+        let card = await Card.find({"_id": req.params.id}) 
+        res.json(card)
+    } catch (error) {
+        res.send({Error: "Resource cannot be found"})
     }
     console.log('get')
 })
 
 
-router.post('/', (req, res) => {
-    res.send('Hello World!')
+router.post('/', async (req, res) => {
+    let list = new List({
+        name: req.params.name
+    })
+
+    try {
+        await list.save()
+        res.json(list)
+    } catch {
+        res.status(500).send()
+        console.log(error)
+    }
+
     console.log('POST')
 })
 
