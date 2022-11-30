@@ -3,11 +3,16 @@ const express = require('express')
 const app = express()
 const port = 8000
 
-const movieRouter = require('./routes/movieRouter')
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+
+const movieRouter = require('./routes/cardRouter')
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 app.use('/movies/', movieRouter);
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

@@ -4,12 +4,13 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 const CardSchema = new Schema({
-  title: String,
+  title: { type: String, required: true },
   body: String,
+  author: String,
   list_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'List'
-}
+  }
 });
 
 // Compile model from schema
