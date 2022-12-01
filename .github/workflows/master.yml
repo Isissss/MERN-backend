@@ -1,4 +1,4 @@
-on: 
+on:
   push:
     branches: 
       - master
@@ -18,3 +18,7 @@ jobs:
         username: ${{ secrets.vps_username }}
         password: ${{ secrets.vps_password }}
         server-dir: ${{ secrets.vps_dir }} 
+        LOCAL_DIR: build
+        METHOD: sftp
+        PORT: 22
+        
