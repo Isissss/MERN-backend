@@ -1,9 +1,10 @@
 const express = require('express')
 
 const router = express.Router();
-const baseURI = process.env.BASE_URI
+
 const Card = require('../Schemas/cardModel')
 
+const baseURI = process.env.BASE_URI
 // Set accepted headers 
 router.get('/', (req, res, next) => {
     if (req.header("accept") == "application/json") {
@@ -63,7 +64,7 @@ router.get('/', async (req, res) => {
             items: cards,
             _links: {
                 self: {
-                    href: `${process.env.BASE_URI}`,
+                    href: baseURI,
                 }
             },
             pagination: {
