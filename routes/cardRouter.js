@@ -37,17 +37,11 @@ router.get('/', async (req, res) => {
         let nextURI
 
         if (req.query.limit) {
-            limit = parseInt(req.query.limit)
-            if (!limit) {
-                limit = totalCards
-            }
+            limit = parseInt(req.query.limit) || totalCards
 
             totalPages = Math.ceil(totalCards / limit)
 
-            page = parseInt(req.query.start)
-            if (!page) {
-                page = 1
-            }
+            page = parseInt(req.query.start) || 1
 
             firstURI = `${baseURI}?start=1&limit=${limit}`
             lastURI = `${baseURI}?start=${totalPages}&limit=${limit}`
@@ -106,7 +100,6 @@ router.get('/', async (req, res) => {
 
 // Get resource
 router.get('/:id', async (req, res) => {
-
     try {
         let card = await Card.findById(req.params.id)
 
