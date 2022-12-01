@@ -1,9 +1,9 @@
 const express = require('express')
 
 const router = express.Router();
-
+const baseURI = process.env.BASE_URI
 const Card = require('../Schemas/cardModel')
- 
+
 // Set accepted headers 
 router.get('/', (req, res, next) => {
     if (req.header("accept") == "application/json") {
@@ -14,25 +14,57 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    console.log(req.headers)
     if (req.header("content-type") == "application/json" || req.header("content-type") == "application/x-www-form-urlencoded") {
         next()
     } else {
         res.status(415).send()
     }
 });
+
 // Get collection
 router.get('/', async (req, res) => {
+
     try {
         const totalCards = await Card.count()
-        
-        const page = parseInt(req.query.page) 
-        const limit = parseInt(req.query.limit) 
-   
+
+        let page
+        let limit
+        let totalPages
+
+        let firstURI
+        let lastURI
+        let prevURI
+        let nextURI
+
+        if (req.query.limit) {
+            limit = parseInt(req.query.limit)
+            if (!limit) {
+                limit = totalCards
+            }
+
+            totalPages = Math.ceil(totalCards / limit)
+
+            page = parseInt(req.query.start)
+            if (!page) {
+                page = 1
+            }
+
+            firstURI = `${baseURI}?start=1&limit=${limit}`
+            lastURI = `${baseURI}?start=${totalPages}&limit=${limit}`
+            prevURI = `${baseURI}?start=${(page == 1) ? 1 : page - 1}&limit=${limit}`
+            nextURI = `${baseURI}?start=${page + 1}&limit=${limit}`
+
+        } else {
+            page = 1
+            totalPages = 1
+            limit = totalCards
+        }
 
         let cards = await Card.find()
-   
-        console.log(totalCards / limit);
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec()
+
         let notesCollection = {
             items: cards,
             _links: {
@@ -43,8 +75,26 @@ router.get('/', async (req, res) => {
             pagination: {
                 "currentPage": page,
                 "currentItems": cards.length,
-                "totalPages": Math.ceil(totalCards / limit),
+                "totalPages": totalPages,
                 "totalItems": totalCards,
+                "_links": {
+                    "first": {
+                        "page": 1,
+                        "href": firstURI ?? baseURI
+                    },
+                    "last": {
+                        "page": totalPages,
+                        "href": lastURI ?? baseURI
+                    },
+                    "previous": {
+                        "page": (page === 1) ? 1 : page - 1,
+                        "href": prevURI ?? baseURI
+                    },
+                    "next": {
+                        "page": (page === totalPages) ? totalPages : page + 1,
+                        "href": nextURI ?? baseURI
+                    }
+                }
             }
         }
         res.json(notesCollection)
@@ -52,7 +102,6 @@ router.get('/', async (req, res) => {
         res.status(500).send()
         console.log(error)
     }
-    console.log('get')
 })
 
 // Get resource
@@ -64,19 +113,16 @@ router.get('/:id', async (req, res) => {
         if (!card) {
             return res.status(404).send({ error: 'Resource cannot be found' })
         }
-
         res.json(card)
-        
+
     } catch (e) {
         res.status(500).send({ error: e.message })
     }
- 
 })
 
- 
+
 // Post
 router.post('/', async (req, res) => {
-
     if (!req.body.title || !req.body.body || !req.body.author) {
         return res.status(400).send('Missing fields')
     }
@@ -94,16 +140,18 @@ router.post('/', async (req, res) => {
         res.status(500).send({ error: e.message })
         console.log(error)
     }
-
-    console.log('POST')
 })
 
- 
 
 // Delete
 router.delete('/:id', async (req, res) => {
     try {
-        await Card.findByIdAndDelete(req.params.id)
+        const card = await Card.findByIdAndDelete(req.params.id)
+
+        if (!card) {
+            return res.status(404).send({ error: 'Resource cannot be found' })
+        }
+
         res.status(204).send()
     } catch (e) {
         res.status(400).send(e.message)
@@ -120,10 +168,15 @@ router.put('/:id', async (req, res) => {
 
     try {
         const card = await Card.findByIdAndUpdate(req.params.id, req.body, { new: true })
+
+        if (!card) {
+            return res.status(404).send({ error: 'Resource cannot be found' })
+        }
+
         res.status(200).json(card)
 
     } catch (e) {
-        res.status(400).send(e.message)
+        res.status(500).send(e.message)
         console.log(e)
     }
 
@@ -135,9 +188,8 @@ router.options('/', (req, res) => {
 })
 
 router.options('/:id', (req, res) => {
-    res.setHeader("Allow", "DELETE, GET, PUT, OPTIONS").send()
+    res.setHeader("Allow", "GET, PUT, DELETE, OPTIONS").send()
 
 })
-
 
 module.exports = router;
