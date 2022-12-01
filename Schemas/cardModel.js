@@ -5,13 +5,23 @@ const Schema = mongoose.Schema;
 
 const CardSchema = new Schema({
   title: { type: String, required: true },
-  body: String,
-  author: String,
+  body: { type: String, required: true },
+  author: { type: String, required: true },
   list_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'List'
-  }
+  }}, { toJSON: {virtuals: true}
 });
 
-// Compile model from schema
+CardSchema.virtual('_links').get(function() {
+    return {
+        self: {
+           href: `${process.env.BASE_URI}${this.id}`
+        },
+        collection: {
+            href: `${process.env.BASE_URI}`
+         },
+    }
+});
+
 module.exports = mongoose.model("Card", CardSchema);
