@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
             firstURI = `${baseURI}?start=1&limit=${limit}`
             lastURI = `${baseURI}?start=${totalPages}&limit=${limit}`
             prevURI = `${baseURI}?start=${(page == 1) ? 1 : page - 1}&limit=${limit}`
-            nextURI = `${baseURI}?start=${page + 1}&limit=${limit}`
+            nextURI = `${baseURI}?start=${(page == totalPages) ? totalPages : page + 1}&limit=${limit}`
 
         } else {
             page = 1
