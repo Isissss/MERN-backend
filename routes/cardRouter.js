@@ -56,7 +56,7 @@ router.get('/', async (req, res) => {
         }
 
         let cards = await Card.find()
-            .limit(limit * 1)
+            .limit(limit)
             .skip((page - 1) * limit)
             .exec()
 
