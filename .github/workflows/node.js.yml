@@ -33,7 +33,7 @@ jobs:
         port: 22
         script: |
           pm2 delete all
-          cd /var/app/
+          cd /var/www/html/app
           git pull
           npm install
           pm2 start npm -- start
