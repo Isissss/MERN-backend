@@ -25,7 +25,7 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - name: SSH Remote Commands
-      uses: appleboy/ssh-action@v0.1.2
+      uses: appleboy/ssh-action@master
       with:
         password: ${{secrets.VPS_PASSWORD}}
         host: ${{secrets.VPS_IP}}
@@ -33,6 +33,3 @@ jobs:
         port: 22
         script: |
           cd /home/ubuntu-1036029/test
-          git pull
-          npm install
-          node index.js
