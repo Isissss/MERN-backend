@@ -27,12 +27,13 @@ jobs:
     - name: SSH Remote Commands
       uses: appleboy/ssh-action@master
       with:
-        passphrase: ${{secrets.VPS_PASSPHRASE}}
-        key: ${{secrets.VPS_KEY}}
+        password: ${{secrets.VPS_PASSWORD}}
         host: ${{secrets.VPS_IP}}
-        username: root
+        username: ${{secrets.VPS_USERNAME}}
         port: 22
         script: |
+          pm2 delete all
           cd /var/www/html/PRG06
           git pull
-          npm i
+          npm install
+          pm2 start npm -- start
