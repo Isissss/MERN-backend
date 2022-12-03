@@ -29,7 +29,8 @@ jobs:
       with:
         password: ${{secrets.VPS_PASSWORD}}
         host: ${{secrets.VPS_IP}}
-        username: ${{secrets.VPS_USERNAME}}
+        username: ubuntu-1036029
+        port: 22
         script: |
           cd /home/ubuntu-1036029/test
           git pull
