@@ -35,5 +35,5 @@ jobs:
           cd /var/www/html/PRG06
           git pull
           ${{secrets.VPS_PASSPHRASE}}
-          npm install
+ 
  
