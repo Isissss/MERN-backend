@@ -1,32 +1,26 @@
-const express = require('express')
 require('dotenv').config()
 
+// Init express
+const express = require('express')
 const app = express()
-const port = 8000
 
+// Init db and connect to it
+const connectDB = require('./db')
+connectDB();
+
+// For parsing body in json/encoded-form-data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 
-const movieRouter = require('./routes/cardRouter')
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('PRG06!')
 })
 
+const movieRouter = require('./routes/cardRouter')
 app.use('/movies/', movieRouter);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+// Start app
+app.listen(8000, () => {
+  console.log(`Example app listening on port 8000`)
 })
 
-// Import the mongoose module
-const mongoose = require("mongoose");
-
-// Set up default mongoose connection
-const mongoDB = "mongodb://127.0.0.1/prg06";
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
-
-// Get the default connection
-const db = mongoose.connection;
-
-// Bind connection to error event (to get notification of connection errors)
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
