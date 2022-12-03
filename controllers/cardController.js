@@ -1,4 +1,5 @@
 const Card = require('../Schemas/cardModel')
+
 const baseURI = process.env.BASE_URI
 
 const getCards = async (req, res) => {

@@ -32,8 +32,7 @@ jobs:
         username: ${{secrets.VPS_USERNAME}}
         port: 22
         script: |
-          pm2 delete all
           cd /var/www/html/PRG06
           git pull
           npm install
-          pm2 start npm -- start
+ 
