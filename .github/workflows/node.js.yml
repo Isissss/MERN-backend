@@ -27,13 +27,14 @@ jobs:
     - name: SSH Remote Commands
       uses: appleboy/ssh-action@master
       with:
-        password: ${{secrets.VPS_PASSWORD}}
+        passphrase: ${{secrets.VPS_PASSPHRASE}}
         host: ${{secrets.VPS_IP}}
+        key: ${{secrets.VPS_KEY}}
         username: ${{secrets.VPS_USERNAME}}
         port: 22
         script: |
           cd /var/www/html/PRG06
           git pull
-          ${{secrets.VPS_PASSPHRASE}}
+ 
  
  
