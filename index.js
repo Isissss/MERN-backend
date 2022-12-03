@@ -1,8 +1,10 @@
 require('dotenv').config()
 
+
 // Init express
 const express = require('express')
 const app = express()
+const port = process.env.APP_PORT || 8000
 
 // Init db and connect to it
 const connectDB = require('./db')
@@ -20,7 +22,7 @@ const movieRouter = require('./routes/cardRouter')
 app.use('/movies/', movieRouter);
 
 // Start app
-app.listen(8000, () => {
-  console.log(`Example app listening on port 8000`)
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
 })
 
