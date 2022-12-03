@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.send('PRG06!')
+  res.send('PRG06 project Isis 1036029!')
 })
 
 const movieRouter = require('./routes/cardRouter')
