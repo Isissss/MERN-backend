@@ -5,8 +5,8 @@ const getCards = async (req, res) => {
     try {
         const totalCards = await Card.count()
         const page = parseInt(req.query.start) || 1
-        const limit = parseInt(req.query.limit)
-        const totalPages = Math.ceil(totalCards / limit) || 1
+        const limit = parseInt(req.query.limit) || totalCards
+        const totalPages = Math.ceil(totalCards / limit)
 
         let firstURI
         let lastURI
@@ -77,7 +77,7 @@ const createCard = async (req, res) => {
 
     } catch (e) {
         res.status(400).send({ error: e.message })
-        console.log(e)
+        console.log(error)
     }
 }
 
