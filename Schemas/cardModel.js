@@ -10,18 +10,21 @@ const CardSchema = new Schema({
   list_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'List'
-  }}, { toJSON: {virtuals: true}
+  }
+}, {
+  toJSON: { virtuals: true },
+  validationLevel: "moderate"
 });
 
-CardSchema.virtual('_links').get(function() {
-    return {
-        self: {
-           href: `${process.env.BASE_URI}${this.id}`
-        },
-        collection: {
-            href: `${process.env.BASE_URI}`
-         },
-    }
+CardSchema.virtual('_links').get(function () {
+  return {
+    self: {
+      href: `${process.env.BASE_URI}${this.id}`
+    },
+    collection: {
+      href: `${process.env.BASE_URI}`
+    },
+  }
 });
 
 module.exports = mongoose.model("Card", CardSchema);

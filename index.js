@@ -6,7 +6,7 @@ const express = require('express')
 const app = express()
 
 // Init db and connect to it
-const connectDB = require('./db')
+const connectDB = require('./config/db')
 connectDB();
 
 // For parsing body in json/encoded-form-data
