@@ -3,9 +3,6 @@ const Card = require('../Schemas/cardModel')
 const router = express.Router();
 
 const { getCards, showCard, createCard, deleteCard, updateCard, cardsOptions, cardOptions } = require('../controllers/cardController');
-const { findById } = require('../Schemas/cardModel');
-
-
 
 // Set accepted headers 
 router.get('/', (req, res, next) => {
@@ -18,7 +15,7 @@ router.get('/', (req, res, next) => {
 
 
 router.post('/', (req, res, next) => {
-    if (req.header("content-type") == "application/json" || req.header("content-type") == "application/x-www-form-urlencoded") {
+    if (["application/json", "application/x-www-form-urlencoded"].includes(req.headers['content-type'])) {
         next()
     } else {
         res.status(415).send()
@@ -27,6 +24,10 @@ router.post('/', (req, res, next) => {
 
 
 router.use('/:id', async (req, res, next) => {
+    if (req.method == "POST") {
+        return next();
+    }
+
     try {
         const card = await Card.findById(req.params.id)
 
