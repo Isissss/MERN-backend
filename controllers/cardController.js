@@ -77,7 +77,7 @@ const createCard = async (req, res) => {
 
     } catch (e) {
         res.status(400).send({ error: e.message })
-        console.log(error)
+        console.log(e)
     }
 }
 
