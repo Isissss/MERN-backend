@@ -35,7 +35,12 @@ router.use('/:id', async (req, res, next) => {
         }
         next()
     } catch (e) {
-        res.status(400).json(e.message)
+        if (e.name == "CastError") {
+            return res.status(400).send({ error: e.message })
+        }
+
+        res.status(500).send({ error: e.message })
+
     }
 });
 
