@@ -1,3 +1,4 @@
+const { mongoose } = require('mongoose')
 const Card = require('../Schemas/cardModel')
 const baseURI = process.env.BASE_URI
 
@@ -76,7 +77,11 @@ const createCard = async (req, res) => {
         res.status(201).json(card)
 
     } catch (e) {
-        res.status(400).send({ error: e.message })
+        if (e instanceof mongoose.Error.ValidationError) {
+            return res.status(400).send({ error: e.message })
+        }
+
+        res.status(500).send({ error: e.message })
         console.log(e)
     }
 }
