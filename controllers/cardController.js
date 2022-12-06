@@ -2,6 +2,24 @@ const { mongoose } = require('mongoose')
 const Card = require('../Schemas/cardModel')
 const baseURI = process.env.BASE_URI
 
+const cardExists = async (req, res, next) => {
+
+    try {
+        const card = await Card.findById(req.params.id)
+
+        if (!card) {
+            return res.status(404).send({ error: "Resource can not be found" })
+        }
+        next()
+    } catch (e) {
+        if (e.name == "CastError") {
+            return res.status(400).send({ error: "No valid ID format provided" })
+        }
+
+        res.status(500).send({ error: e.message })
+
+    }
+}
 const getCards = async (req, res) => {
     try {
         const totalCards = await Card.count()
@@ -64,7 +82,6 @@ const getCards = async (req, res) => {
         console.log(error)
     }
 }
-
 const createCard = async (req, res) => {
     const card = new Card({
         title: req.body.title,
@@ -136,5 +153,6 @@ module.exports = {
     deleteCard,
     updateCard,
     cardsOptions,
-    cardOptions
+    cardOptions,
+    cardExists
 }
