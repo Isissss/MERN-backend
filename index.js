@@ -17,6 +17,7 @@ app.get('/', (req, res) => {
   res.send('PRG06 project Isis 1036029!')
 })
 
+// Import routes
 const movieRouter = require('./routes/cardRouter')
 app.use('/movies/', movieRouter);
 
