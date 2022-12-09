@@ -3,6 +3,12 @@ const router = express.Router();
 
 const { getCards, showCard, createCard, deleteCard, updateCard, cardsOptions, cardOptions, cardExists } = require('../controllers/cardController');
 
+router.use('/', (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    next()
+})
+
 // Set accepted headers 
 router.get('/', (req, res, next) => {
     if (req.header("accept") === "application/json") next()

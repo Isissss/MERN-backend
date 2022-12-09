@@ -3,6 +3,7 @@ const port = process.env.APP_PORT || 8000
 
 // Init express
 const express = require('express')
+const cors = require('cors')
 const app = express()
 
 // Init db and connect to it

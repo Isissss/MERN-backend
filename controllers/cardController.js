@@ -10,38 +10,91 @@ const cardExists = async (req, res, next) => {
         if (!card) {
             return res.status(404).send({ error: "Resource can not be found" })
         }
-        next()
+        return next()
     } catch (e) {
         if (e.name == "CastError") {
-            return res.status(400).send({ error: "No valid ID format provided" })
+            return res.status(404).send({ error: "Resource can not be found" })
         }
 
         res.status(500).send({ error: e.message })
 
     }
 }
+const getLastPageStart = (totalCards, limit) => { return ((Math.ceil(totalCards / limit) * limit) - limit) + 1 }
+
+const getQueryString = (position, totalCards, start, limit) => {
+    if (limit == totalCards) {
+        return baseURI
+    }
+
+    switch (position) {
+        case "first":
+            startValue = 1
+            break
+        case "last":
+            startValue = getLastPageStart(totalCards, limit)
+            break
+        case "previous":
+            startValue = (start - limit < 1) ? 1 : start - limit
+            break
+        case "next":
+            startValue = (start + limit > totalCards) ? getLastPageStart(totalCards, limit) : start + limit
+            break
+        default:
+            return baseURI
+    }
+    return baseURI + `?start=${startValue}&limit=${limit}`
+}
+const getCurrentItems = (totalCards, start, limit) => { return (totalCards - start < limit) ? totalCards - start + 1 : limit }
+
+const createPagination = (totalCards, start, limit) => {
+
+    const page = Math.ceil(start / limit)
+    const totalPages = Math.ceil(totalCards / limit)
+
+    return {
+        "currentPage": page,
+        "currentItems": getCurrentItems(totalCards, start, limit),
+        "totalPages": totalPages,
+        "totalItems": totalCards,
+        "_links": {
+            "first": {
+                "page": 1,
+                "href": getQueryString("first", totalCards, start, limit)
+            },
+            "last": {
+                "page": totalPages,
+                "href": getQueryString("last", totalCards, start, limit)
+            },
+            "previous": {
+                "page": (page <= 1) ? 1 : page - 1,
+                "href": getQueryString("previous", totalCards, start, limit)
+            },
+            "next": {
+                "page": (page >= totalPages) ? totalPages : page + 1,
+                "href": getQueryString("next", totalCards, start, limit)
+            }
+        }
+
+    }
+}
+
 const getCards = async (req, res) => {
+
     try {
         const totalCards = await Card.count()
-        const page = parseInt(req.query.start) || 1
-        const limit = parseInt(req.query.limit) || totalCards
-        const totalPages = Math.ceil(totalCards / limit)
+        const start = parseInt(req.query.start) || 1
 
-        let firstURI
-        let lastURI
-        let prevURI
-        let nextURI
-
-        if (req.query.limit) {
-            firstURI = `${baseURI}?start=1&limit=${limit}`
-            lastURI = `${baseURI}?start=${totalPages}&limit=${limit}`
-            prevURI = `${baseURI}?start=${(page == 1) ? 1 : page - 1}&limit=${limit}`
-            nextURI = `${baseURI}?start=${(page == totalPages) ? totalPages : page + 1}&limit=${limit}`
+        if (start > totalCards || start < 1) {
+            return res.status(400).send({ error: "Start is out of range" })
         }
+
+        const limit = parseInt(req.query.limit) || totalCards
+
 
         let cards = await Card.find()
             .limit(limit)
-            .skip((page - 1) * limit)
+            .skip(start - 1)
             .exec()
 
         let cardsCollection = {
@@ -51,30 +104,7 @@ const getCards = async (req, res) => {
                     href: baseURI,
                 }
             },
-            pagination: {
-                "currentPage": page,
-                "currentItems": cards.length,
-                "totalPages": totalPages,
-                "totalItems": totalCards,
-                "_links": {
-                    "first": {
-                        "page": 1,
-                        "href": firstURI ?? baseURI
-                    },
-                    "last": {
-                        "page": totalPages,
-                        "href": lastURI ?? baseURI
-                    },
-                    "previous": {
-                        "page": (page == 1) ? 1 : page - 1,
-                        "href": prevURI ?? baseURI
-                    },
-                    "next": {
-                        "page": (page == totalPages) ? totalPages : page + 1,
-                        "href": nextURI ?? baseURI
-                    }
-                }
-            }
+            pagination: createPagination(totalCards, start, limit)
         }
         res.json(cardsCollection)
     } catch (error) {
@@ -82,6 +112,7 @@ const getCards = async (req, res) => {
         console.log(error)
     }
 }
+
 const createCard = async (req, res) => {
     const card = new Card({
         title: req.body.title,
@@ -140,6 +171,7 @@ const updateCard = async (req, res) => {
 
 const cardsOptions = async (req, res) => {
     res.setHeader("Allow", "GET, POST, OPTIONS").send()
+
 }
 
 const cardOptions = async (req, res) => {
