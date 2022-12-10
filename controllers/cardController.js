@@ -61,7 +61,10 @@ const createCard = async (req, res) => {
     const card = new Card({
         title: req.body.title,
         body: req.body.body,
-        author: req.body.author
+        author: req.body.author,
+        severity: req.body.severity,
+        location: req.body.location,
+        category: req.body.category
     })
 
     try {
