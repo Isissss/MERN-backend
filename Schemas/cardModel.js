@@ -10,7 +10,10 @@ const CardSchema = new Schema({
   list_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'List'
-  }
+  },
+  category: { type: String, required: true },
+  severity: { type: String, required: true },
+  location: { type: String, required: true }
 }, {
   toJSON: { virtuals: true },
   validationLevel: "moderate"
