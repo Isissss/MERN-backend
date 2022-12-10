@@ -18,8 +18,8 @@ app.get('/', (req, res) => {
 })
 
 // Import routes
-const movieRouter = require('./routes/cardRouter')
-app.use('/movies/', movieRouter);
+const cardsRouter = require('./routes/cardRouter')
+app.use('/cards/', cardsRouter);
 
 // Start app
 app.listen(port, () => {

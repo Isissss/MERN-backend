@@ -24,6 +24,7 @@ const getQueryString = (position, totalCards, start, limit) => {
             return baseURI
     }
     return baseURI + `?start=${startValue}&limit=${limit}`
+
 }
 const getCurrentItems = (totalCards, start, limit) => { return (totalCards - start < limit) ? totalCards - start + 1 : limit }
 
