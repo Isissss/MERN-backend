@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-
+const cors = require('cors')
 const { getCards, showCard, createCard, deleteCard, updateCard, cardsOptions, cardOptions, cardExists } = require('../controllers/cardController');
 
 router.use('/', (req, res, next) => {

@@ -170,11 +170,13 @@ const updateCard = async (req, res) => {
 }
 
 const cardsOptions = async (req, res) => {
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
     res.setHeader("Allow", "GET, POST, OPTIONS").send()
 
 }
 
 const cardOptions = async (req, res) => {
+    res.setHeader("Access-Control-Allow-Methods", "GET, PUT, DELETE, OPTIONS")
     res.setHeader("Allow", "GET, PUT, DELETE, OPTIONS").send()
 }
 
