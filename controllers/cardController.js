@@ -45,7 +45,7 @@ const getCards = async (req, res) => {
             items: cards,
             _links: {
                 self: {
-                    href: baseURI,
+                    href: process.env.BASE_URI,
                 }
             },
             pagination: createPagination(totalCards, start, limit)
