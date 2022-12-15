@@ -26,16 +26,15 @@ const getQueryString = (position, totalCards, start, limit) => {
     return baseURI + `?start=${startValue}&limit=${limit}`
 
 }
-const getCurrentItems = (totalCards, start, limit) => { return (totalCards - start < limit) ? totalCards - start + 1 : limit }
-
-const createPagination = (totalCards, start, limit) => {
+ 
+const createPagination = (totalCards, currentCards, start, limit) => {
 
     const page = Math.ceil(start / limit)
-    const totalPages = Math.ceil(totalCards / limit)
+    const totalPages = (Math.ceil(totalCards / limit) == 0) ? 1 : Math.ceil(totalCards / limit)
 
     return {
         "currentPage": page,
-        "currentItems": getCurrentItems(totalCards, start, limit),
+        "currentItems": currentCards,
         "totalPages": totalPages,
         "totalItems": totalCards,
         "_links": {

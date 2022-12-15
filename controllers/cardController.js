@@ -41,6 +41,8 @@ const getCards = async (req, res) => {
             .skip(start - 1)
             .exec()
 
+        let currentItems = cards.length
+       
         let cardsCollection = {
             items: cards,
             _links: {
@@ -48,7 +50,7 @@ const getCards = async (req, res) => {
                     href: process.env.BASE_URI,
                 }
             },
-            pagination: createPagination(totalCards, start, limit)
+            pagination: createPagination(totalCards, currentItems, start, limit)
         }
         res.json(cardsCollection)
     } catch (error) {
