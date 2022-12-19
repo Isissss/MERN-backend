@@ -42,7 +42,7 @@ const getCards = async (req, res) => {
             .exec()
 
         let currentItems = cards.length
-       
+
         let cardsCollection = {
             items: cards,
             _links: {
@@ -54,24 +54,26 @@ const getCards = async (req, res) => {
         }
         res.json(cardsCollection)
     } catch (error) {
-        res.status(500).send(error.message)
+        res.status(500).send({ error: error.message })
         console.log(error)
     }
 }
 
 const createCard = async (req, res) => {
-
+    const card = new Card({
+        title: req.body.title,
+        body: req.body.body,
+        author: req.body.author,
+        category: req.body.category,
+        severity: req.body.severity,
+        location: req.body.location
+    })
 
     try {
-        const card = await Card.create(req.body);
+        await card.save();
         res.status(201).json(card)
-
     } catch (e) {
-        if (e instanceof mongoose.Error.ValidationError) {
-            return res.status(400).send({ error: e.message })
-        }
-
-        res.status(500).send({ error: e.message })
+        res.status(400).send({ error: e.message })
         console.log(e)
     }
 }
@@ -100,13 +102,21 @@ const deleteCard = async (req, res) => {
 }
 
 const updateCard = async (req, res) => {
+    const values = {
+        title: req.body.title,
+        body: req.body.body,
+        author: req.body.author,
+        category: req.body.category,
+        severity: req.body.severity,
+        location: req.body.location
+    }
+
     try {
-        const card = await Card.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+        const card = await Card.findByIdAndUpdate(req.params.id, values, { new: true, runValidators: true })
         res.status(200).json(card)
 
     } catch (e) {
         res.status(400).json({ 'error': e.message })
-        console.log(e)
     }
 
 }
