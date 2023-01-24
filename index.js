@@ -21,6 +21,8 @@ app.get('/', (req, res) => {
 const cardsRouter = require('./routes/cardRouter')
 app.use('/cards/', cardsRouter);
 
+const listRouter = require('./routes/listRouter')
+app.use('/lists/', listRouter);
 // Start app
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

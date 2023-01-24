@@ -1,11 +1,14 @@
 const mongoose = require('mongoose')
-
+const { Schema } = mongoose;
 // Define schema
-const Schema = mongoose.Schema;
+
 
 const ListSchema = new Schema({
-  name: String,
+  name: { type: String },
+  cards: [{ type: Schema.Types.ObjectId, ref: 'Card' }]
 });
+
+
 
 // Compile model from schema
 module.exports = mongoose.model("List", ListSchema);

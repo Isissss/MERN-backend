@@ -66,7 +66,8 @@ const createCard = async (req, res) => {
         author: req.body.author,
         category: req.body.category,
         severity: req.body.severity,
-        location: req.body.location
+        location: req.body.location,
+        list_id: req.body.list_id
     })
 
     try {
@@ -108,7 +109,8 @@ const updateCard = async (req, res) => {
         author: req.body.author,
         category: req.body.category,
         severity: req.body.severity,
-        location: req.body.location
+        location: req.body.location,
+        list_id: req.body.list_id
     }
 
     try {

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const List = require('./listModel')
 // Define schema
 const Schema = mongoose.Schema;
 
@@ -8,7 +8,7 @@ const CardSchema = new Schema({
   body: { type: String, required: true },
   author: { type: String, required: true },
   list_id: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'List'
   },
   category: { type: String, required: true },
