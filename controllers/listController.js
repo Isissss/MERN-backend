@@ -24,20 +24,20 @@ const getLists = async (req, res) => {
         const totalLists = await List.count()
         const start = parseInt(req.query.start) || 1
 
-
-        const limit = parseInt(req.query.limit) || totalLists
-
-        let lists = await List.find()
-            .limit(limit)
-            .skip(start - 1)
-            .exec()
-
-        let currentItems = lists.length
-
-        for (let list of lists) {
-            list.cards = await Card.find({ list_id: list._id })
+        if (start > totalLists || start < 1) {
+            return res.status(400).send({ error: "Start is out of range" })
         }
 
+        const limit = parseInt(req.query.limit) || totalLists
+        const pipeline = [
+            {
+                $lookup: { from: "cards", localField: "_id", foreignField: "list_id", as: "cards" }
+            }
+        ]
+
+        let lists = await List.aggregate(pipeline).limit(limit).skip(start - 1).exec()
+
+        let currentItems = lists.length
 
         let listsCollection = {
             items: lists,
@@ -84,6 +84,8 @@ const showList = async (req, res) => {
 const deleteList = async (req, res) => {
     try {
         await List.findByIdAndDelete(req.params.id)
+
+        await Card.deleteMany({ list_id: req.params.id })
         res.status(204).send()
 
     } catch (e) {
