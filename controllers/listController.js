@@ -24,9 +24,8 @@ const getLists = async (req, res) => {
         const totalLists = await List.count()
         const start = parseInt(req.query.start) || 1
 
-        if (start > totalLists || start < 1) {
-            return res.status(400).send({ error: "Start is out of range" })
-        }
+        if (start > totalLists || start < 1) return res.status(400).send({ error: "Start is out of range" })
+
 
         const limit = parseInt(req.query.limit) || totalLists
         const pipeline = [

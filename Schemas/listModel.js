@@ -4,8 +4,7 @@ const { Schema } = mongoose;
 
 
 const ListSchema = new Schema({
-  name: { type: String },
-  cards: [{ type: Schema.Types.ObjectId, ref: 'Card' }]
+  name: { type: String }
 });
 
 
