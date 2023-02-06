@@ -4,7 +4,8 @@ const { Schema } = mongoose;
 
 
 const ListSchema = new Schema({
-  name: { type: String }
+  name: { type: String },
+  board_id: { type: Schema.Types.ObjectId, ref: 'Board' }
 });
 
 

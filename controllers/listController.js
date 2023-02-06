@@ -55,9 +55,9 @@ const getLists = async (req, res) => {
 }
 
 const createList = async (req, res) => {
-    console.log(req.body)
     const list = new List({
-        name: req.body.name
+        name: req.body.name,
+        board_id: req.body.board_id
     })
 
     try {

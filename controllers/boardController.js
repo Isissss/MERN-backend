@@ -1,7 +1,6 @@
-
 const Board = require('../Schemas/boardModel')
-const List = require('../Schemas/listModel')
 const Card = require('../Schemas/cardModel')
+const mongoose = require('mongoose')
 
 const boardExists = async (req, res, next) => {
     try {
@@ -55,8 +54,25 @@ const createBoard = async (req, res) => {
 }
 
 const showBoard = async (req, res) => {
+
     try {
-        const board = await Board.findById(req.params.id)
+        const board = await Board.aggregate([
+            {
+                $match: { _id: mongoose.Types.ObjectId(req.params.id) }
+            },
+            {
+                $lookup: {
+                    from: "lists", localField: "_id", foreignField: "board_id", as: "lists", pipeline: [
+                        {
+                            $lookup: {
+                                from: "cards", localField: "_id", foreignField: "list_id", as: "cards"
+                            }
+                        }
+                    ]
+                },
+            }]).exec()
+
+
         res.json(board)
 
     } catch (e) {
@@ -69,7 +85,8 @@ const deleteBoard = async (req, res) => {
     try {
         await Board.findByIdAndDelete(req.params.id)
 
-        await Card.deleteMany({ board_id: req.params.id })
+        const list = await List.deleteMany({ board_id: req.params.id })
+        // await Card.deleteMany({ list_id: list._id })
         res.status(204).send()
 
     } catch (e) {
