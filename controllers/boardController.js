@@ -1,5 +1,6 @@
 const Board = require('../Schemas/boardModel')
 const Card = require('../Schemas/cardModel')
+const List = require('../Schemas/listModel')
 const mongoose = require('mongoose')
 
 const boardExists = async (req, res, next) => {
@@ -86,7 +87,7 @@ const deleteBoard = async (req, res) => {
         await Board.findByIdAndDelete(req.params.id)
 
         const list = await List.deleteMany({ board_id: req.params.id })
-        // await Card.deleteMany({ list_id: list._id })
+        await Card.deleteMany({ list_id: list._id })
         res.status(204).send()
 
     } catch (e) {
