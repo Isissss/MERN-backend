@@ -4,7 +4,7 @@ const port = process.env.APP_PORT || 8000
 // Init express
 const express = require('express')
 const app = express()
-
+const router = express.Router();
 // Init db and connect to it
 const connectDB = require('./config/db')
 connectDB();
@@ -26,6 +26,14 @@ app.use('/lists/', listRouter);
 
 const boardRouter = require('./routes/boardRouter')
 app.use('/boards/', boardRouter);
+
+const loginRouter = require('./routes/authController');
+app.use('/login/', loginRouter);
+
+const registerRouter = require('./routes/RegisterController');
+app.use('/register/', registerRouter);
+
+module.exports = router;
 
 // Start app
 app.listen(port, () => {
