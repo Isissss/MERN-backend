@@ -23,6 +23,7 @@ router.post('/', (req, res, next) => {
 router.route('/')
     .post(authController.login)
 
+
 router.route('/refresh')
     .get(authController.refresh)
 

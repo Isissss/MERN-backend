@@ -95,6 +95,14 @@ const logout = (req, res) => {
     res.json({ message: 'Cookie cleared' })
 }
 
+const loginOptions = async (req, res) => {
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    res.setHeader("Allow", "GET, POST, OPTIONS").send()
+
+}
+
+
+
 module.exports = {
     login,
     refresh,
