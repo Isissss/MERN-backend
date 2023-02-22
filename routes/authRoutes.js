@@ -1,7 +1,6 @@
 const express = require('express');
-const { handleLogin } = require('../controllers/authController');
 const router = express.Router();
-const { registerUser } = require('../controllers/userController');
+const authController = require('../controllers/authController')
 
 router.use('/', (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*")
@@ -21,6 +20,13 @@ router.post('/', (req, res, next) => {
     else res.status(415).send()
 });
 
-router.post('/', handleLogin);
+router.route('/')
+    .post(authController.login)
 
-module.exports = router;
+router.route('/refresh')
+    .get(authController.refresh)
+
+router.route('/logout')
+    .post(authController.logout)
+
+module.exports = router

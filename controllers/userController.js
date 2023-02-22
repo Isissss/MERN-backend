@@ -7,8 +7,11 @@ const registerUser = async (req, res) => {
     if (!username || !password) return res.status(400).json({ 'message': 'Username and password are required.' });
 
     // check for duplicate usernames in the db
-    const user = await User.findOne({ username: username });
-    if (user) return res.sendStatus(409); //Conflict 
+    const duplicate = await User.findOne({ username }).lean().exec()
+
+    if (duplicate) {
+        return res.status(409).json({ message: 'Duplicate username' })
+    }
 
     try {
         //encrypt the password
@@ -23,7 +26,7 @@ const registerUser = async (req, res) => {
 
         console.log(result);
 
-        res.status(201).json({ 'success': `New user ${user} created!` });
+        res.status(201).json({ 'success': `New user ${username} created!` });
     } catch (err) {
         res.status(500).json({ 'message': err.message });
     }

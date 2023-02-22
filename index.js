@@ -1,6 +1,6 @@
 require('dotenv').config()
 const port = process.env.APP_PORT || 8000
-
+const cookieParser = require('cookie-parser')
 // Init express
 const express = require('express')
 const app = express()
@@ -12,7 +12,7 @@ connectDB();
 // For parsing body in json/encoded-form-data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
-
+app.use(cookieParser())
 app.get('/', (req, res) => {
   res.send('PRG06 project Isis 1036029!')
 })
@@ -27,10 +27,10 @@ app.use('/lists/', listRouter);
 const boardRouter = require('./routes/boardRouter')
 app.use('/boards/', boardRouter);
 
-const loginRouter = require('./routes/authController');
-app.use('/login/', loginRouter);
+const loginRouter = require('./routes/authRoutes');
+app.use('/auth/', loginRouter);
 
-const registerRouter = require('./routes/RegisterController');
+const registerRouter = require('./routes/registerController');
 app.use('/register/', registerRouter);
 
 module.exports = router;
