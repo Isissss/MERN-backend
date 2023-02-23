@@ -23,7 +23,7 @@ router.post('/', (req, res, next) => {
 
 
 // Get collection
-router.route('/').get(verifyJWT, getBoards).post(verifyJWT, createBoard).options(verifyJWT, boardsOptions)
+router.route('/').get(verifyJWT, getBoards).post(verifyJWT, createBoard).options(boardsOptions)
 
 // Get resource
 router.route('/:id').get(verifyJWT, boardExists, showBoard).delete(verifyJWT, boardExists, deleteBoard).put(boardExists, updateBoard).options(boardOptions)
