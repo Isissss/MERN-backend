@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 const { getBoards, showBoard, createBoard, deleteBoard, updateBoard, boardsOptions, boardOptions, boardExists } = require('../controllers/boardController');
-
+const verifyJWT = require('../middleware/verifyJWT');
 router.use('/', (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -22,10 +22,10 @@ router.post('/', (req, res, next) => {
 
 
 // Get collection
-router.route('/').get(getBoards).post(createBoard).options(boardsOptions)
+router.route('/').get(verifyJWT, getBoards).post(verifyJWT, createBoard).options(verifyJWT, boardsOptions)
 
 // Get resource
-router.route('/:id').get(boardExists, showBoard).delete(boardExists, deleteBoard).put(boardExists, updateBoard).options(boardOptions)
+router.route('/:id').get(verifyJWT, boardExists, showBoard).delete(verifyJWT, boardExists, deleteBoard).put(boardExists, updateBoard).options(boardOptions)
 
 
 module.exports = router; 

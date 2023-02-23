@@ -13,6 +13,7 @@ connectDB();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 app.use(cookieParser())
+
 app.get('/', (req, res) => {
   res.send('PRG06 project Isis 1036029!')
 })
@@ -27,10 +28,10 @@ app.use('/lists/', listRouter);
 const boardRouter = require('./routes/boardRouter')
 app.use('/boards/', boardRouter);
 
-const loginRouter = require('./routes/authRoutes');
+const loginRouter = require('./routes/authRouter');
 app.use('/auth/', loginRouter);
 
-const registerRouter = require('./routes/registerController');
+const registerRouter = require('./routes/registerRouter');
 app.use('/register/', registerRouter);
 
 module.exports = router;

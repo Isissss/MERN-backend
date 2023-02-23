@@ -1,6 +1,7 @@
 const Board = require('../Schemas/boardModel')
 const Card = require('../Schemas/cardModel')
 const List = require('../Schemas/listModel')
+const User = require('../Schemas/userModel')
 const mongoose = require('mongoose')
 
 const boardExists = async (req, res, next) => {
@@ -20,9 +21,10 @@ const boardExists = async (req, res, next) => {
 
 
 const getBoards = async (req, res) => {
-
     try {
-        let boards = await Board.find()
+        const foundUser = await User.findOne({ "username": req.user })
+
+        const boards = await Board.find({ "owner_id": foundUser._id })
 
         let boardsCollection = {
             items: boards,
@@ -40,9 +42,11 @@ const getBoards = async (req, res) => {
 }
 
 const createBoard = async (req, res) => {
-    console.log(req.body)
+    const foundUser = await User.findOne({ "username": req.user })
+
     const board = new Board({
-        name: req.body.name
+        name: req.body.name,
+        owner_id: foundUser._id
     })
 
     try {
@@ -55,6 +59,15 @@ const createBoard = async (req, res) => {
 }
 
 const showBoard = async (req, res) => {
+    const foundUser = await User.findOne({ "username": req.user })
+    // return with unauthorized status if not found
+    if (!foundUser) return res.status(401).send({ error: "Unauthorized" })
+
+    const ownsBoard = await Board.findOne({ "owner_id": foundUser._id, "_id": req.params.id }).lean()
+
+    // return with forbidden status if not found
+    if (!ownsBoard) return res.status(403).send({ error: "Forbidden" })
+
 
     try {
         const board = await Board.aggregate([

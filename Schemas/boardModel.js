@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const BoardSchema = new Schema({
     name: { type: String, required: true },
-    user_id: { type: Schema.Types.ObjectId, ref: 'User' },
+    owner_id: { type: Schema.Types.ObjectId, ref: 'User' },
     members: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 }, {
     toJSON: { virtuals: true },
