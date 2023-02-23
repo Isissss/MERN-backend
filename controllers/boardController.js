@@ -22,8 +22,10 @@ const boardExists = async (req, res, next) => {
 
 const getBoards = async (req, res) => {
     try {
+        console.log(req?.user)
         const foundUser = await User.findOne({ "username": req.user })
 
+        if (!foundUser) return res.status(401).send({ error: "No user found" })
         const boards = await Board.find({ "owner_id": foundUser._id })
 
         let boardsCollection = {
