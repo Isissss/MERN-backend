@@ -45,10 +45,14 @@ const getBoards = async (req, res) => {
 }
 
 const createBoard = async (req, res) => {
+    const foundUser = await User.findOne({ "username": req.user })
+    // return with unauthorized status if not found
+    if (!foundUser) return res.status(401).send({ error: "Unauthorized" })
+
 
     const board = new Board({
         name: req.body.name,
-        owner_id: req.user._id
+        owner_id: foundUser._id
     })
 
     try {

@@ -2,7 +2,7 @@
 const express = require('express')
 const router = express.Router()
 const usersController = require('../controllers/userController')
-const verifyJWT = require('../middleware/verifyJWT')
+
 
 router.use('/', (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "http://localhost:1234")
