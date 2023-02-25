@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router();
 const { getBoards, showBoard, createBoard, deleteBoard, updateBoard, boardsOptions, boardOptions, boardExists } = require('../controllers/boardController');
 const verifyJWT = require('../middleware/verifyJWT');
+const verifyOwnership = require('../middleware/verifyOwnership');
 router.use('/', (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "http://localhost:1234")
     res.header('Access-Control-Allow-Credentials', true)
@@ -26,7 +27,7 @@ router.post('/', (req, res, next) => {
 router.route('/').get(verifyJWT, getBoards).post(verifyJWT, createBoard).options(boardsOptions)
 
 // Get resource
-router.route('/:id').get(verifyJWT, boardExists, showBoard).delete(verifyJWT, boardExists, deleteBoard).put(boardExists, updateBoard).options(boardOptions)
+router.route('/:id').get(verifyJWT, boardExists, verifyOwnership, showBoard).delete(verifyJWT, boardExists, verifyOwnership, deleteBoard).put(boardExists, verifyOwnership, updateBoard).options(boardOptions)
 
 
 module.exports = router; 

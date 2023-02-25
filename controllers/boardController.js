@@ -6,10 +6,11 @@ const mongoose = require('mongoose')
 
 const boardExists = async (req, res, next) => {
     try {
-        const board = await Board.findById(req.params.id)
+        const board = await Board.findById(req.params.id).lean()
 
         if (!board) return res.status(404).send({ error: "Resource can not be found" })
 
+        req.board = board
         return next()
     } catch (e) {
         if (e.name == "CastError") return res.status(404).send({ error: "Resource can not be found" })
@@ -44,11 +45,10 @@ const getBoards = async (req, res) => {
 }
 
 const createBoard = async (req, res) => {
-    const foundUser = await User.findOne({ "username": req.user })
 
     const board = new Board({
         name: req.body.name,
-        owner_id: foundUser._id
+        owner_id: req.user._id
     })
 
     try {
@@ -61,20 +61,11 @@ const createBoard = async (req, res) => {
 }
 
 const showBoard = async (req, res) => {
-    const foundUser = await User.findOne({ "username": req.user })
-    // return with unauthorized status if not found
-    if (!foundUser) return res.status(401).send({ error: "Unauthorized" })
-
-    const ownsBoard = await Board.findOne({ "owner_id": foundUser._id, "_id": req.params.id }).lean()
-
-    // return with forbidden status if not found
-    if (!ownsBoard) return res.status(403).send({ error: "Forbidden" })
-
 
     try {
         const board = await Board.aggregate([
             {
-                $match: { _id: mongoose.Types.ObjectId(req.params.id) }
+                $match: { _id: mongoose.Types.ObjectId(req.board._id) }
             },
             {
                 $lookup: {
@@ -99,9 +90,9 @@ const showBoard = async (req, res) => {
 
 const deleteBoard = async (req, res) => {
     try {
-        await Board.findByIdAndDelete(req.params.id)
+        await Board.deleteOne(req.board)
 
-        const list = await List.deleteMany({ board_id: req.params.id })
+        const list = await List.deleteMany({ board_id: req.board._id })
         await Card.deleteMany({ list_id: list._id })
         res.status(204).send()
 
