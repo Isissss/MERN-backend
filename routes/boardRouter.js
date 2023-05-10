@@ -27,7 +27,7 @@ router.post('/', (req, res, next) => {
 router.route('/').get(verifyJWT, getBoards).post(verifyJWT, createBoard).options(boardsOptions)
 
 // Get resource
-router.route('/:id').get(verifyJWT, boardExists, verifyOwnership, showBoard).delete(verifyJWT, boardExists, verifyOwnership, deleteBoard).put(boardExists, verifyOwnership, updateBoard).options(boardOptions)
+router.route('/:id').get(verifyJWT, verifyOwnership, showBoard).delete(verifyJWT, boardExists, verifyOwnership, deleteBoard).put(boardExists, verifyOwnership, updateBoard).options(boardOptions)
 
 
 module.exports = router; 
