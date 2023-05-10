@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 
 const boardExists = async (req, res, next) => {
     try {
-        const board = await Board.findById(req.params.id).lean()
+        const board = await Board.findById(req.params.id)
 
         if (!board) return res.status(404).send({ error: "Resource can not be found" })
 
