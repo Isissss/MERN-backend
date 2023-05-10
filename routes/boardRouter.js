@@ -4,7 +4,7 @@ const { getBoards, showBoard, createBoard, deleteBoard, updateBoard, boardsOptio
 const verifyJWT = require('../middleware/verifyJWT');
 const verifyOwnership = require('../middleware/verifyOwnership');
 router.use('/', (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", ["https://client-isissss.kanban.app"])
+    res.header("Access-Control-Allow-Origin", ["https://kanban-isissss.kanban.app"])
     res.header('Access-Control-Allow-Credentials', true)
     res.header("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept")
     next()
